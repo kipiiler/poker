@@ -24,6 +24,12 @@ jobs:
     - name: Install dependencies
       run: go get .
 
+    - name: Tidy
+      run: go mod tidy
+
+    - name: Lint
+      run: go vet ./...
+
     - name: Build
       run: go build -v -o .\bin\main.exe .\...
 
