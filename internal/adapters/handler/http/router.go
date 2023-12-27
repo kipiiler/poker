@@ -29,7 +29,7 @@ func NewRouter(
 	router.Use(cors.New(config))
 
 	// Routes
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Version 1.0.0
 	v1 := router.Group("/v1")
