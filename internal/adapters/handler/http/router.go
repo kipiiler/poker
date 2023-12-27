@@ -1,11 +1,16 @@
 package handler
 
 import (
+	// _ "HuskyHoldEm/docs"
 	"os"
 	"strings"
 
+	_ "github.com/ATC-UW/HuskyHoldem/docs"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Router struct {
@@ -26,12 +31,13 @@ func NewRouter(
 	router.Use(cors.New(config))
 
 	// Routes
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Version 1.0.0
 	v1 := router.Group("/v1")
 	{
 		ping := v1.Group("/ping")
-		ping.GET("/ping", pingHandler.Ping)
+		ping.GET("/", pingHandler.Ping)
 		ping.GET("/env", pingHandler.GetEnv)
 	}
 
