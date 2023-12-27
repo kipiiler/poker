@@ -17,7 +17,7 @@ import (
 // @contact.url	huskyholdem.com
 // @contact.email admin@huskyholdem.com
 //
-// @host localhost:5000
+// @host localhost:8080
 // @BasePath /v1
 func main() {
 	err := godotenv.Load()

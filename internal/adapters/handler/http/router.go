@@ -1,11 +1,9 @@
 package handler
 
 import (
-	// _ "HuskyHoldEm/docs"
+	_ "holdem/docs"
 	"os"
 	"strings"
-
-	_ "github.com/ATC-UW/HuskyHoldem/docs"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
