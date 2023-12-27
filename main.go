@@ -1,20 +1,31 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
+	handler "huskyholdem/handler/http"
+	"os"
 
-	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "hooray!",
-		})
-	})
-	err := r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	err := godotenv.Load()
 	if err != nil {
-		panic(err)
+		fmt.Println("Error loading .env file")
+		os.Exit(1)
+	}
+	port := os.Getenv("PORT")
+	pingHandler := handler.NewPingHandler()
+
+	router, err := handler.NewRouter(pingHandler)
+	if err != nil {
+		fmt.Println("Unable to start application: " + err.Error())
+		os.Exit(1)
+	}
+
+	err = router.Run(":" + port)
+	if err != nil {
+		fmt.Println("Unable to start http: " + err.Error())
+		os.Exit(1)
 	}
 }

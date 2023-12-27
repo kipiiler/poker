@@ -9,10 +9,12 @@ import (
 )
 
 type Router struct {
-	Engine *gin.Engine
+	router *gin.Engine
 }
 
-func NewRouter() *Router {
+func NewRouter(
+	pingHandler *PingHandler,
+) (*Router, error) {
 
 	// Cors
 	config := cors.DefaultConfig()
@@ -28,19 +30,16 @@ func NewRouter() *Router {
 	// Version 1.0.0
 	v1 := router.Group("/v1")
 	{
+		ping := v1.Group("/ping")
+		ping.GET("/ping", pingHandler.Ping)
+		ping.GET("/env", pingHandler.GetEnv)
 	}
-	// r.GET("/ping", func(c *gin.Context) {
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"message": "hooray!",
-	// 	})
-	// })
-	// err := r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
-
-	// if err != nil {
-	// 	panic(err)
-	// }
 
 	return &Router{
-		Engine: router,
-	}
+		router: router,
+	}, nil
+}
+
+func (r *Router) Run(address string) error {
+	return r.router.Run(address)
 }
