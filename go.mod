@@ -30,6 +30,8 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
     huskyholdem/card v1.0.0
+    huskyholdem/port v1.0.0
 )
 
 replace huskyholdem/card => ./internal/core/domain/card
+replace huskyholdem/port => ./internal/core/port
