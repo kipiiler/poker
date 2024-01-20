@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  postgres_production:
+    image: postgres:alpine
+    container_name: huskyholdem_postgres_production_container
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_PRODUCTION}
+      POSTGRES_USER: ${POSTGRES_USER_PRODUCTION}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_PRODUCTION}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_production_data:/var/lib/postgresql/data
+
+  postgres_development:
+    image: postgres:alpine
+    container_name: huskyholdem_postgres_development_container
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_DEVELOPMENT}
+      POSTGRES_USER: ${POSTGRES_USER_DEVELOPMENT}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_DEVELOPMENT}
+    ports:
+      - "5433:5432"  # Use a different port for development
+    volumes:
+      - postgres_development_data:/var/lib/postgresql/data
+
+  redis_production:
+    image: redis:alpine
+    container_name: huskyholdem_redis_production_container
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD_PRODUCTION}
+
+
+  redis_development:
+    image: redis:alpine
+    container_name: huskyholdem_redis_development_container
+    restart: always
+    ports:
+      - "6380:6379"  # Use a different port for development
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD_DEVELOPMENT}
+
+volumes:
+  postgres_production_data:
+  postgres_development_data:
