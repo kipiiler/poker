@@ -1,6 +1,6 @@
 package domain
 
-type player struct {
-    ID string
-    Name string
-} 
+type Player struct {
+	ID   string
+	Name string
+}

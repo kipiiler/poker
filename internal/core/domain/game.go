@@ -1,11 +1,10 @@
 package domain
 
 type Game struct {
-    botID []string
-    started string
-    ended string
-    winner string
-    history []GameState
-    config GameConfig
+	BotID   []string
+	Started string
+	Ended   string
+	Winner  string
+	History []GameState
+	Config  GameConfig
 }
-

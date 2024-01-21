@@ -48,6 +48,7 @@ require (
 	huskyholdem/handler v1.0.0
 	huskyholdem/port v1.0.0
 	huskyholdem/utils v1.0.0 // indirect
+	huskyholdem/card v1.0.0 // indirect
 )
 
 replace huskyholdem/card => ./internal/core/domain/card
