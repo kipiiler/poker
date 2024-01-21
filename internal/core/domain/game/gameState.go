@@ -1,4 +1,4 @@
-package domain
+package game
 
 import (
 	c "huskyholdem/card"

@@ -49,9 +49,12 @@ require (
 	huskyholdem/port v1.0.0
 	huskyholdem/utils v1.0.0 // indirect
 	huskyholdem/card v1.0.0 // indirect
+	huskyholdem/game v1.0.0 // indirect
 )
 
 replace huskyholdem/card => ./internal/core/domain/card
+
+replace huskyholdem/game => ./internal/core/domain/game
 
 replace huskyholdem/port => ./internal/core/port
 

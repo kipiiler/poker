@@ -1,4 +1,4 @@
-package domain
+package game
 
 type Game struct {
 	BotID   []string
