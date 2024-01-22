@@ -4,7 +4,11 @@ go 1.21.5
 
 require github.com/gin-gonic/gin v1.9.1 // indirect
 
-require github.com/google/go-cmp v0.5.9 // indirect
+require (
+	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/uuid v1.5.0 // indirect
+	github.com/gorilla/websocket v1.5.1 // indirect
+)
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
@@ -45,11 +49,11 @@ require (
 	golang.org/x/tools v0.16.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	huskyholdem/card v1.0.0 // indirect
+	huskyholdem/game v1.0.0 // indirect
 	huskyholdem/handler v1.0.0
 	huskyholdem/port v1.0.0
 	huskyholdem/utils v1.0.0 // indirect
-	huskyholdem/card v1.0.0 // indirect
-	huskyholdem/game v1.0.0 // indirect
 )
 
 replace huskyholdem/card => ./internal/core/domain/card

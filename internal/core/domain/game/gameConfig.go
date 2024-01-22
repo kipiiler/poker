@@ -1,5 +1,13 @@
 package game
 
 type GameConfig struct {
-	GameID string
+	TimePerRound int `json:"timePerRound"`
+}
+
+func NewGameConfig(timePerRound int) *GameConfig {
+	return &GameConfig{TimePerRound: timePerRound}
+}
+
+func NewDefaultConfig() *GameConfig {
+	return &GameConfig{TimePerRound: 30}
 }
