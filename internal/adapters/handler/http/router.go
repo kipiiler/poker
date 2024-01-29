@@ -1,4 +1,4 @@
-package handler
+package adapters
 
 import (
 	_ "holdem/docs"

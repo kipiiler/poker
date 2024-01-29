@@ -1,7 +1,7 @@
 package user
 
 type User struct {
-	Username   string   `json:"username"`
+	Email      string   `json:"email"`
 	Password   string   `json:"password"`
 	AuthTokens []string `json:"authTokens"`
 	BotTokens  []string `json:"botTokens"`

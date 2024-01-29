@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	port "huskyholdem/port"
 
 	"github.com/google/uuid"
@@ -18,7 +19,7 @@ func NewUserService(userRepository port.UserRepository, userCache port.UserCache
 
 // Login checks if the user exists and if the password is correct.
 func (us *UserService) Login(email string, password string) error {
-	user, err := us.userRepository.GetUserByUsername(email)
+	user, err := us.userRepository.GetUserByEmail(email)
 	if err != nil {
 		return err
 	}
@@ -28,11 +29,23 @@ func (us *UserService) Login(email string, password string) error {
 	return nil
 }
 
-func (us *UserService) GenerateAuthToken(email string) {
+func (us *UserService) GenerateAuthToken(email string) (string, error) {
 	// Generate auth token
 	authToken := uuid.New().String()
 
-	us.userCache.AddKey(authToken, 10800)
+	err := us.userCache.AddKey(authToken, 10800)
+	if err != nil {
+		return "", err
+	}
+
+	fmt.Println("authToken: ", authToken)
+
+	err2 := us.userRepository.AddUserAuthToken(email, authToken)
+	if err2 != nil {
+		return "", err2
+	}
+
+	return authToken, nil
 }
 
 func (us *UserService) GenerateBotToken(email string, botId string) {
@@ -41,5 +54,8 @@ func (us *UserService) GenerateBotToken(email string, botId string) {
 	// Generate bot token
 	botToken := uuid.New().String()
 
-	us.userCache.AddKey(botToken, 10800)
+	err := us.userCache.AddKey(botToken, 10800)
+	if err != nil {
+		us.userRepository.AddUserBotToken(email, botToken)
+	}
 }
