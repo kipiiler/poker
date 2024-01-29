@@ -13,6 +13,7 @@ require (
 	github.com/go-openapi/jsonreference v0.20.4 // indirect
 	github.com/go-openapi/spec v0.20.13 // indirect
 	github.com/go-openapi/swag v0.22.6 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -62,9 +63,18 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	huskyholdem/handler v1.0.0
+	huskyholdem/port v1.0.0
+	huskyholdem/user v1.0.0
 	huskyholdem/utils v1.0.0
+	huskyholdem/service v1.0.0
 )
 
 replace huskyholdem/utils => ./internal/core/utils
+
+replace huskyholdem/service => ./internal/core/service
+
+replace huskyholdem/user => ./internal/core/domain/user
+
+replace huskyholdem/port => ./internal/core/port
 
 replace huskyholdem/handler => ./internal/adapters/handler

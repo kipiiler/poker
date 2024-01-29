@@ -27,8 +27,9 @@ func main() {
 	}
 	port := os.Getenv("PORT")
 	pingHandler := handler.NewPingHandler()
+	authHandler := handler.NewAuthHandler()
 
-	router, err := handler.NewRouter(pingHandler)
+	router, err := handler.NewRouter(pingHandler, authHandler)
 	if err != nil {
 		fmt.Println("Unable to start application: " + err.Error())
 		os.Exit(1)
