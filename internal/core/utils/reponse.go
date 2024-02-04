@@ -7,6 +7,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type AuthReponseMessage struct {
+	AuthToken string `json:"authToken" example:""`
+}
+
+func NewAuthResponseMessage(authToken string) *AuthReponseMessage {
+	return &AuthReponseMessage{AuthToken: authToken}
+}
+
+type AuthRequestMessage struct {
+	Email    string `json:"email" example:""`
+	Password string `json:"password" example:""`
+}
+
+func NewAuthRequestMessage(email string, password string) *AuthRequestMessage {
+	return &AuthRequestMessage{Email: email, Password: password}
+}
+
 type EnvResponseMessage struct {
 	Enviroment     string `json:"enviroment" example:"development"`
 	AllowedOrigins string `json:"allowedOrigins" example:"http://localhost:3000"`

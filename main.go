@@ -2,8 +2,14 @@ package main
 
 import (
 	"fmt"
-	handler "huskyholdem/handler/http"
 	"os"
+
+	handler "huskyholdem/adapters/handler/http"
+	userAdapter "huskyholdem/adapters/user"
+	autils "huskyholdem/adapters/utils"
+	service "huskyholdem/service"
+
+	_ "github.com/lib/pq"
 
 	"github.com/joho/godotenv"
 )
@@ -26,9 +32,40 @@ func main() {
 		os.Exit(1)
 	}
 	port := os.Getenv("PORT")
-	pingHandler := handler.NewPingHandler()
 
-	router, err := handler.NewRouter(pingHandler)
+	var (
+		host     = os.Getenv("HOST")
+		dbport   = os.Getenv("POSTGRESS_PORT_DEVELOPMENT")
+		user     = os.Getenv("POSTGRES_USER_DEVELOPMENT")
+		password = os.Getenv("POSTGRES_PASSWORD_DEVELOPMENT")
+		dbname   = os.Getenv("POSTGRES_DB_DEVELOPMENT")
+	)
+
+	userPostgres := autils.NewPostgressDb(host, dbport, user, password, dbname)
+	userCacheClient := autils.NewRedisCache()
+	if userCacheClient == nil {
+		fmt.Println("Unable to connect to redis")
+		os.Exit(1)
+	}
+	fmt.Println("Successfully connected to redis")
+
+	db, err := userPostgres.Connect()
+	if err != nil {
+		fmt.Println("Unable to connect to database: " + err.Error())
+		os.Exit(1)
+	}
+	fmt.Println("Successfully connected to database")
+	defer userPostgres.Close(db)
+
+	userRepo := userAdapter.NewUserRepository(db)
+	userCache := userAdapter.NewUserCache(userCacheClient)
+
+	userService := service.NewUserService(userRepo, userCache)
+
+	pingHandler := handler.NewPingHandler()
+	authHandler := handler.NewAuthHandler(userService)
+
+	router, err := handler.NewRouter(pingHandler, authHandler)
 	if err != nil {
 		fmt.Println("Unable to start application: " + err.Error())
 		os.Exit(1)
