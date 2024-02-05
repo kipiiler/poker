@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY,
     password VARCHAR(255) NOT NULL,
     auth_tokens TEXT[],
     bot_tokens TEXT[]

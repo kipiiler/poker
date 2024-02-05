@@ -24,4 +24,5 @@ type UserService interface {
 	Login(email string, password string) error
 	GenerateAuthToken(email string) (string, error)
 	GenerateBotToken(email string, botId string)
+	CheckAuthToken(email string, token string) (bool, error)
 }

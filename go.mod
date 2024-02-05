@@ -71,6 +71,7 @@ require (
 	huskyholdem/service v1.0.0
 	huskyholdem/user v1.0.0
 	huskyholdem/utils v1.0.0
+	huskyholdem/bot v1.0.0
 )
 
 replace huskyholdem/utils => ./internal/core/utils
@@ -78,6 +79,8 @@ replace huskyholdem/utils => ./internal/core/utils
 replace huskyholdem/service => ./internal/core/service
 
 replace huskyholdem/user => ./internal/core/domain/user
+
+replace huskyholdem/bot => ./internal/core/domain/bot
 
 replace huskyholdem/adapters => ./internal/adapters
 

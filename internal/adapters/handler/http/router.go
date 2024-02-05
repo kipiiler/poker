@@ -18,6 +18,7 @@ type Router struct {
 func NewRouter(
 	pingHandler *PingHandler,
 	authHandler *AuthHandler,
+	botHandler *BotHandler,
 ) (*Router, error) {
 
 	// Cors
@@ -42,6 +43,9 @@ func NewRouter(
 		auth := v1.Group("/auth")
 		auth.POST("/login", authHandler.AuthUserWithEmail)
 		auth.POST("/bot", authHandler.GenerateBotToken)
+
+		bot := v1.Group("/bot").Use(AuthTokenMiddleware(authHandler.UserService))
+		bot.POST("/new", botHandler.CreateNewBot)
 	}
 
 	return &Router{

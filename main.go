@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	botAdapter "huskyholdem/adapters/bot"
 	handler "huskyholdem/adapters/handler/http"
 	userAdapter "huskyholdem/adapters/user"
 	autils "huskyholdem/adapters/utils"
@@ -41,31 +42,37 @@ func main() {
 		dbname   = os.Getenv("POSTGRES_DB_DEVELOPMENT")
 	)
 
-	userPostgres := autils.NewPostgressDb(host, dbport, user, password, dbname)
-	userCacheClient := autils.NewRedisCache()
-	if userCacheClient == nil {
+	postgresDbClient := autils.NewPostgressDb(host, dbport, user, password, dbname)
+	redisCacheClient := autils.NewRedisCache()
+	if redisCacheClient == nil {
 		fmt.Println("Unable to connect to redis")
 		os.Exit(1)
 	}
 	fmt.Println("Successfully connected to redis")
 
-	db, err := userPostgres.Connect()
+	db, err := postgresDbClient.Connect()
 	if err != nil {
 		fmt.Println("Unable to connect to database: " + err.Error())
 		os.Exit(1)
 	}
 	fmt.Println("Successfully connected to database")
-	defer userPostgres.Close(db)
+	defer postgresDbClient.Close(db)
 
 	userRepo := userAdapter.NewUserRepository(db)
-	userCache := userAdapter.NewUserCache(userCacheClient)
+	userCache := userAdapter.NewUserCache(redisCacheClient)
 
 	userService := service.NewUserService(userRepo, userCache)
 
+	botCache := botAdapter.NewBotCache(redisCacheClient)
+	botRepository := botAdapter.NewBotRepository(db)
+
+	botService := service.NewBotService(botRepository, botCache)
+
 	pingHandler := handler.NewPingHandler()
 	authHandler := handler.NewAuthHandler(userService)
+	botHandler := handler.NewBotHandler(botService, userService)
 
-	router, err := handler.NewRouter(pingHandler, authHandler)
+	router, err := handler.NewRouter(pingHandler, authHandler, botHandler)
 	if err != nil {
 		fmt.Println("Unable to start application: " + err.Error())
 		os.Exit(1)
