@@ -31,7 +31,11 @@ func (us *UserService) Login(email string, password string) error {
 
 func (us *UserService) GenerateAuthToken(email string) (string, error) {
 	// Generate auth token
-	authToken := uuid.New().String()
+	userClaims := NewUserClaims(email)
+	authToken, errToken := NewAuthToken(userClaims)
+	if errToken != nil {
+		return "", errToken
+	}
 
 	err := us.userCache.AddKey(authToken, 10800)
 	if err != nil {
