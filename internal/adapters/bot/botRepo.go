@@ -56,7 +56,7 @@ func (repo *BotRepository) CreateNewBot(bot *bot.Bot) error {
 }
 
 func (repo *BotRepository) UpdateBot(bot *bot.Bot) error {
-	sqlCode := `UPDATE bots SET name=$1, img_url=$2, bot_token=$3, keys=$4 WHERE bot_id=$5;`
+	sqlCode := `UPDATE bots SET bot_name=$1, img_url=$2, bot_tokens=$3, keys=$4 WHERE bot_id=$5;`
 	_, err := repo.db.Exec(sqlCode, bot.Name, bot.ImgUrl, pq.Array(bot.BotToken), pq.Array(bot.Keys), bot.ID)
 	return err
 }

@@ -14,15 +14,21 @@ func AuthTokenMiddleware(us *service.UserService) gin.HandlerFunc {
 			Email string `json:"email"`
 		}
 
-		var message messagePayload
-		token := strings.Split(c.Request.Header["Authorization"][0], " ")[1]
-
-		if err := c.ShouldBindJSON(&message); err != nil {
-			utils.HandleError(c, utils.ErrBadRequest)
+		header := c.Request.Header["Authorization"]
+		if len(header) == 0 {
+			utils.HandleError(c, utils.ErrUnauthorized)
 			return
 		}
 
-		isTokenValid, err := us.CheckAuthToken(message.Email, token)
+		token := strings.Split(header[0], " ")[1]
+
+		userClaim, errParse := service.ParseAuthAccessToken(token)
+		if errParse != nil {
+			utils.HandleError(c, utils.ErrUnauthorized)
+			return
+		}
+
+		isTokenValid, err := us.CheckAuthToken(userClaim.Email, token)
 		if err != nil {
 			utils.HandleError(c, utils.ErrUnauthorized)
 			return

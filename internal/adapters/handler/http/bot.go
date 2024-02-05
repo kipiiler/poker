@@ -3,6 +3,7 @@ package adapters
 import (
 	"fmt"
 	_ "holdem/docs"
+	"huskyholdem/bot"
 	service "huskyholdem/service"
 	"huskyholdem/utils"
 	"math/rand"
@@ -59,7 +60,7 @@ func (h *BotHandler) CreateNewBot(c *gin.Context) {
 	}
 
 	if botInfo.Name == "" {
-		botInfo.Name = "Bot-" + randomString(6)
+		botInfo.Name = "Bot-" + randomString(16)
 	}
 
 	if botInfo.ImgUrl == "" {
@@ -75,6 +76,48 @@ func (h *BotHandler) CreateNewBot(c *gin.Context) {
 	utils.HandleSuccess(c, gin.H{"bot_id": id})
 }
 
-func UpdateBotMetadata(c *gin.Context) {
-	// var botInfo bot.BotMetaData
+func (h *BotHandler) UpdateBotMetadata(c *gin.Context) {
+	var botInfo bot.BotMetaData
+
+	if err := c.ShouldBindJSON(&botInfo); err != nil {
+		utils.HandleError(c, utils.ErrBadRequest)
+		return
+	}
+
+	bot_id := c.Param("botId")
+
+	bot, err_find_bot := h.BotService.GetBotByID(bot_id)
+
+	if err_find_bot != nil {
+		utils.HandleError(c, err_find_bot)
+		return
+	}
+
+	if botInfo.Name == "" {
+		botInfo.Name = bot.Name
+	}
+
+	if botInfo.ImgUrl == "" {
+		botInfo.ImgUrl = bot.ImgUrl
+	}
+
+	err := h.BotService.UpdateBotMetadata(bot_id, &botInfo)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, botInfo)
+}
+
+func (h *BotHandler) GetBotByID(c *gin.Context) {
+	bot_id := c.Param("botId")
+
+	bot, err := h.BotService.GetBotByID(bot_id)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, bot)
 }

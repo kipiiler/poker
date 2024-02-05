@@ -2,8 +2,8 @@ CREATE TABLE bots (
     bot_id VARCHAR(255) UNIQUE PRIMARY KEY,
     bot_name VARCHAR(255) NOT NULL,
     img_url VARCHAR(255),
-    bot_tokens TEXT[],
     user_id VARCHAR(255) NOT NULL,
+    bot_tokens TEXT[],
     keys TEXT[],
     FOREIGN KEY (user_id) REFERENCES users(email)
 );

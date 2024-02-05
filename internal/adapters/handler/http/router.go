@@ -46,6 +46,8 @@ func NewRouter(
 
 		bot := v1.Group("/bot").Use(AuthTokenMiddleware(authHandler.UserService))
 		bot.POST("/new", botHandler.CreateNewBot)
+		bot.GET("/:botId", botHandler.GetBotByID)
+		bot.PUT("/:botId", botHandler.UpdateBotMetadata)
 	}
 
 	return &Router{
