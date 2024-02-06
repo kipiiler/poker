@@ -80,3 +80,23 @@ func (repo *BotRepository) RemoveKey(botId string, key string) error {
 	_, err := repo.db.Exec(sqlCode, key, botId)
 	return err
 }
+
+func (repo *BotRepository) AddBotToken(botId string, token string) error {
+	sqlCode := `
+	UPDATE bots
+	SET bot_tokens = array_append(bot_tokens, $1)
+	WHERE bot_id = $2;`
+
+	_, err := repo.db.Exec(sqlCode, token, botId)
+	return err
+}
+
+func (repo *BotRepository) RemoveBotToken(botId string, token string) error {
+	sqlCode := `
+	UPDATE bots
+	SET bot_tokens = array_remove(bot_tokens, $1)
+	WHERE bot_id = $2;`
+
+	_, err := repo.db.Exec(sqlCode, token, botId)
+	return err
+}

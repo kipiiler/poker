@@ -36,6 +36,17 @@ func (b *BotCache) AddKey(key string, value string) error {
 	return nil
 }
 
+func (b *BotCache) AddKeyWithExpiration(key string, value string, expiration int) error {
+	// Bot value expire after 1 day
+	expirationTime := time.Duration(expiration) * time.Second
+	err := b.client.Set(context.Background(), key, value, expirationTime).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (b *BotCache) RemoveKey(key string) error {
 	// Use the Del method to remove a key
 	err := b.client.Del(context.Background(), key).Err()

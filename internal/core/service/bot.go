@@ -149,3 +149,41 @@ func (bs *BotService) FlushCache(id string) error {
 
 	return nil
 }
+
+func (bs *BotService) CheckBotToken(botId string, email string) (bool, error) {
+	bot, err := bs.botRepository.GetBotByID(botId)
+	if err != nil {
+		return false, err
+	}
+
+	return bot.UserID == email, nil
+}
+
+func (bs *BotService) GenerateBotAuthToken(botId string) (string, error) {
+	bot, err := bs.botRepository.GetBotByID(botId)
+	if err != nil {
+		return "", err
+	}
+
+	claims := NewBotClaim(bot.UserID, bot.ID)
+	token, err := NewBotToken(claims)
+	if err != nil {
+		return "", err
+	}
+
+	errCache := bs.botCache.AddKeyWithExpiration(token, bot.UserID, 3600)
+	if errCache != nil {
+		return "", errCache
+	}
+
+	errRepo := bs.botRepository.AddBotToken(botId, token)
+	if errRepo != nil {
+		errRemove := bs.botCache.RemoveKey(token)
+		if errRemove != nil {
+			return "", errRemove
+		}
+		return "", errRepo
+	}
+
+	return token, nil
+}

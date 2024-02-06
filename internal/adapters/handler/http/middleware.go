@@ -40,3 +40,35 @@ func AuthTokenMiddleware(us *service.UserService) gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func AuthBotTokenMiddleware(bs *service.BotService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		header := c.Request.Header["Authorization"]
+		if len(header) == 0 {
+			utils.HandleError(c, utils.ErrUnauthorized)
+			return
+		}
+
+		token := strings.Split(header[0], " ")[1]
+		botClaims, errParse := service.ParseBotToken(token)
+
+		if errParse != nil {
+			utils.HandleError(c, utils.ErrUnauthorized)
+			return
+		}
+
+		isTokenValid, err := bs.CheckBotToken(botClaims.BotId, botClaims.Email)
+
+		if err != nil {
+			utils.HandleError(c, utils.ErrUnauthorized)
+			return
+		}
+
+		if !isTokenValid {
+			utils.HandleError(c, utils.ErrUnauthorized)
+			return
+		}
+
+		c.Next()
+	}
+}

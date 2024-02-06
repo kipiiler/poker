@@ -53,11 +53,12 @@ func (us *UserService) GenerateAuthToken(email string) (string, error) {
 }
 
 func (us *UserService) CheckAuthToken(email string, token string) (bool, error) {
-	isTokenExpire, err := us.userCache.CheckKeyExists(token)
+	isTokenExists, err := us.userCache.CheckKeyExists(token)
 	if err != nil {
 		return false, err
 	}
-	if !isTokenExpire {
+	fmt.Println("isTokenExpire: ", isTokenExists)
+	if !isTokenExists {
 		us.userRepository.DeleteUserAuthToken(email, token)
 		return false, errors.New("Token is expired")
 	}

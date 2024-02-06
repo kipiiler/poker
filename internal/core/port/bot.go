@@ -5,6 +5,7 @@ import "huskyholdem/bot"
 type BotCache interface {
 	CheckKeyExists(key string) (bool, error)
 	AddKey(key string, value string) error
+	AddKeyWithExpiration(key string, value string, expiration int) error
 	GetKey(key string) (string, error)
 	RemoveKey(key string) error
 	GetKeysWithPrefix(prefix string) ([]string, error)
@@ -17,6 +18,8 @@ type BotRepository interface {
 	UpdateBot(bot *bot.Bot) error
 	AddKey(botId string, key string) error
 	RemoveKey(botId string, key string) error
+	AddBotToken(botId string, token string) error
+	RemoveBotToken(botId string, token string) error
 }
 
 type BotService interface {
@@ -30,5 +33,7 @@ type BotService interface {
 	AddKeyValuesToCache(id string, key string, value string) error
 	RemoveKeyValueFromCache(id string, key string) error
 	FlushCache(id string) error
+	CheckBotToken(botId string, email string) (bool, error)
+	GenerateBotToken(botId string) (string, error)
 	// IsUserOwnBot(email string, botId string) (bool, error)
 }

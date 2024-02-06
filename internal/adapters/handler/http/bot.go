@@ -7,6 +7,7 @@ import (
 	service "huskyholdem/service"
 	"huskyholdem/utils"
 	"math/rand"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -120,4 +121,108 @@ func (h *BotHandler) GetBotByID(c *gin.Context) {
 	}
 
 	utils.HandleSuccess(c, bot)
+}
+
+func (h *BotHandler) GenerateBotAuthToken(c *gin.Context) {
+	bot_id := c.Param("botId")
+
+	token, err := h.BotService.GenerateBotAuthToken(bot_id)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, token)
+}
+
+func (h *BotHandler) GetBotByToken(c *gin.Context) {
+
+	token := strings.Split(c.Request.Header["Authorization"][0], " ")[1]
+	botClaims, _ := service.ParseBotToken(token)
+
+	bot, err := h.BotService.GetBotByID(botClaims.BotId)
+
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, bot)
+}
+
+func (h *BotHandler) UpdateBotMetadataByToken(c *gin.Context) {
+	var botInfo bot.BotMetaData
+
+	if err := c.ShouldBindJSON(&botInfo); err != nil {
+		utils.HandleError(c, utils.ErrBadRequest)
+		return
+	}
+
+	token := strings.Split(c.Request.Header["Authorization"][0], " ")[1]
+	botClaims, _ := service.ParseBotToken(token)
+
+	err := h.BotService.UpdateBotMetadata(botClaims.BotId, &botInfo)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, botInfo)
+}
+
+func (h *BotHandler) AddKeyValueToCache(c *gin.Context) {
+	type messagePayload struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	}
+
+	var keyValue messagePayload
+
+	if err := c.ShouldBindJSON(&keyValue); err != nil {
+		utils.HandleError(c, utils.ErrBadRequest)
+		return
+	}
+
+	token := strings.Split(c.Request.Header["Authorization"][0], " ")[1]
+	botClaims, _ := service.ParseBotToken(token)
+
+	err := h.BotService.AddKeyValuesToCache(botClaims.BotId, keyValue.Key, keyValue.Value)
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, keyValue)
+}
+
+func (h *BotHandler) GetBotKeyFromCache(c *gin.Context) {
+	key := c.Param("key")
+
+	token := strings.Split(c.Request.Header["Authorization"][0], " ")[1]
+	botClaims, _ := service.ParseBotToken(token)
+
+	value, err := h.BotService.GetKeyFromCache(botClaims.BotId, key)
+
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, gin.H{"key": key, "value": value})
+}
+
+func (h *BotHandler) RemoveBotKeyFromCache(c *gin.Context) {
+	key := c.Param("key")
+
+	token := strings.Split(c.Request.Header["Authorization"][0], " ")[1]
+	botClaims, _ := service.ParseBotToken(token)
+
+	err := h.BotService.RemoveKeyValueFromCache(botClaims.BotId, key)
+
+	if err != nil {
+		utils.HandleError(c, err)
+		return
+	}
+
+	utils.HandleSuccess(c, gin.H{"key": key})
 }
