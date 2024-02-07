@@ -52,6 +52,31 @@ func (us *UserService) GenerateAuthToken(email string) (string, error) {
 	return authToken, nil
 }
 
+func (us *UserService) CheckAuthToken(email string, token string) (bool, error) {
+	isTokenExists, err := us.userCache.CheckKeyExists(token)
+	if err != nil {
+		return false, err
+	}
+	fmt.Println("isTokenExpire: ", isTokenExists)
+	if !isTokenExists {
+		us.userRepository.DeleteUserAuthToken(email, token)
+		return false, errors.New("Token is expired")
+	}
+
+	authTokens, err := us.userRepository.GetUserAuthTokens(email)
+	if err != nil {
+		return false, err
+	}
+
+	for _, authToken := range authTokens {
+		if authToken == token {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
 func (us *UserService) GenerateBotToken(email string, botId string) {
 	// TODO: Check if botId is valid with BotRepository
 

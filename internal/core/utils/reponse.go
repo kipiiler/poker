@@ -73,4 +73,5 @@ func HandleError(c *gin.Context, err error) {
 	}
 	rsp := errorResponseMessage{Message: err.Error(), Success: false}
 	c.JSON(statusCode, rsp)
+	c.Abort()
 }
