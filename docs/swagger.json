@@ -13,6 +13,443 @@
     "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Authenticate user with email and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Authenticate user with email and password",
+                "parameters": [
+                    {
+                        "description": "User Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "User Password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Auth token",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AuthResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/new": {
+            "post": {
+                "description": "Create a new bot with name, imgUrl, and email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Create new bot",
+                "parameters": [
+                    {
+                        "description": "Bot Name",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Bot Image URL",
+                        "name": "imgUrl",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Bot Email",
+                        "name": "email",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bot ID",
+                        "schema": {
+                            "$ref": "#/definitions/utils.responseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/token/key": {
+            "post": {
+                "description": "Add key value to cache",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Add key value to cache",
+                "parameters": [
+                    {
+                        "description": "Key",
+                        "name": "key",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Value",
+                        "name": "value",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Key Value",
+                        "schema": {
+                            "$ref": "#/definitions/utils.responseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/token/key/{key}": {
+            "get": {
+                "description": "Get bot key from cache",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Get bot key from cache",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Key Value",
+                        "schema": {
+                            "$ref": "#/definitions/utils.responseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove bot key from cache",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Remove bot key from cache",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Key",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Key",
+                        "schema": {
+                            "$ref": "#/definitions/utils.responseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/token/self": {
+            "get": {
+                "description": "Get bot by token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Get bot by token",
+                "responses": {
+                    "200": {
+                        "description": "Bot",
+                        "schema": {
+                            "$ref": "#/definitions/bot.Bot"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/token/update": {
+            "put": {
+                "description": "Update bot metadata by token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Update bot metadata by token",
+                "parameters": [
+                    {
+                        "description": "Bot Name",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Bot Image URL",
+                        "name": "imgUrl",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bot Metadata",
+                        "schema": {
+                            "$ref": "#/definitions/bot.BotMetaData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/{botId}": {
+            "get": {
+                "description": "Get bot by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Get bot by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bot ID",
+                        "name": "botId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bot",
+                        "schema": {
+                            "$ref": "#/definitions/bot.Bot"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update bot metadata with name and imgUrl",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Update bot metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bot ID",
+                        "name": "botId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Bot Name",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Bot Image URL",
+                        "name": "imgUrl",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bot Metadata",
+                        "schema": {
+                            "$ref": "#/definitions/utils.responseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/{botId}/generate": {
+            "post": {
+                "description": "Generate bot auth token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bot"
+                ],
+                "summary": "Generate bot auth token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bot ID",
+                        "name": "botId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Bot Auth Token",
+                        "schema": {
+                            "$ref": "#/definitions/utils.responseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.errorResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "If server is healthy, it will return \"hooray!\"",
@@ -67,6 +504,55 @@
         }
     },
     "definitions": {
+        "bot.Bot": {
+            "type": "object",
+            "properties": {
+                "botToken": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "imgUrl": {
+                    "type": "string"
+                },
+                "keys": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "bot.BotMetaData": {
+            "type": "object",
+            "properties": {
+                "imgUrl": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.AuthResponseMessage": {
+            "type": "object",
+            "properties": {
+                "authToken": {
+                    "type": "string",
+                    "example": ""
+                }
+            }
+        },
         "utils.EnvResponseMessage": {
             "type": "object",
             "properties": {
@@ -96,6 +582,20 @@
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "utils.responseMessage": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "Success"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         }
