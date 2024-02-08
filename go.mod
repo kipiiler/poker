@@ -29,6 +29,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.15.5 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -53,6 +54,7 @@ require (
 	golang.org/x/tools v0.16.1 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	huskyholdem/bot v1.0.0 // indirect
 	huskyholdem/card v1.0.0 // indirect
 	huskyholdem/game v1.0.0 // indirect
 	huskyholdem/port v1.0.0 // indirect
@@ -69,6 +71,8 @@ replace huskyholdem/utils => ./internal/core/utils
 replace huskyholdem/service => ./internal/core/service
 
 replace huskyholdem/user => ./internal/core/domain/user
+
+replace huskyholdem/bot => ./internal/core/domain/bot
 
 replace huskyholdem/adapters => ./internal/adapters
 

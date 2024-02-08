@@ -19,6 +19,19 @@ func NewAuthHandler(userService *service.UserService) *AuthHandler {
 	}
 }
 
+// AuthUserWithEmail godoc
+//
+// @Summary		Authenticate user with email and password
+// @Description	Authenticate user with email and password
+// @Tags			Auth
+// @Accept		json
+// @Produce		json
+// @Param		email	body	string	true	"User Email"
+// @Param		password	body	string	true	"User Password"
+// @Success		200			{object}	utils.AuthResponseMessage	"Auth token"
+// @Failure		400			{object}	utils.errorResponseMessage "Bad request"
+// @Failure		401			{object}	utils.errorResponseMessage "Unauthorized"
+// @Router		/auth/login [post]
 func (h *AuthHandler) AuthUserWithEmail(c *gin.Context) {
 	var userInfo user.User
 	if err := c.ShouldBindJSON(&userInfo); err != nil {

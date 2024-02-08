@@ -7,12 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthReponseMessage struct {
+type AuthResponseMessage struct {
 	AuthToken string `json:"authToken" example:""`
 }
 
-func NewAuthResponseMessage(authToken string) *AuthReponseMessage {
-	return &AuthReponseMessage{AuthToken: authToken}
+func NewAuthResponseMessage(authToken string) *AuthResponseMessage {
+	return &AuthResponseMessage{AuthToken: authToken}
 }
 
 type AuthRequestMessage struct {
@@ -73,4 +73,5 @@ func HandleError(c *gin.Context, err error) {
 	}
 	rsp := errorResponseMessage{Message: err.Error(), Success: false}
 	c.JSON(statusCode, rsp)
+	c.Abort()
 }

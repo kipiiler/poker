@@ -31,7 +31,11 @@ func (us *UserService) Login(email string, password string) error {
 
 func (us *UserService) GenerateAuthToken(email string) (string, error) {
 	// Generate auth token
-	authToken := uuid.New().String()
+	userClaims := NewUserClaims(email)
+	authToken, errToken := NewAuthToken(userClaims)
+	if errToken != nil {
+		return "", errToken
+	}
 
 	err := us.userCache.AddKey(authToken, 10800)
 	if err != nil {
@@ -46,6 +50,31 @@ func (us *UserService) GenerateAuthToken(email string) (string, error) {
 	}
 
 	return authToken, nil
+}
+
+func (us *UserService) CheckAuthToken(email string, token string) (bool, error) {
+	isTokenExists, err := us.userCache.CheckKeyExists(token)
+	if err != nil {
+		return false, err
+	}
+	fmt.Println("isTokenExpire: ", isTokenExists)
+	if !isTokenExists {
+		us.userRepository.DeleteUserAuthToken(email, token)
+		return false, errors.New("Token is expired")
+	}
+
+	authTokens, err := us.userRepository.GetUserAuthTokens(email)
+	if err != nil {
+		return false, err
+	}
+
+	for _, authToken := range authTokens {
+		if authToken == token {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func (us *UserService) GenerateBotToken(email string, botId string) {

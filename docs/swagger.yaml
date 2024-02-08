@@ -1,5 +1,37 @@
 basePath: /v1
 definitions:
+  bot.Bot:
+    properties:
+      botToken:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      imgUrl:
+        type: string
+      keys:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      userId:
+        type: string
+    type: object
+  bot.BotMetaData:
+    properties:
+      imgUrl:
+        type: string
+      name:
+        type: string
+    type: object
+  utils.AuthResponseMessage:
+    properties:
+      authToken:
+        example: ""
+        type: string
+    type: object
   utils.EnvResponseMessage:
     properties:
       allowedOrigins:
@@ -22,6 +54,16 @@ definitions:
       success:
         type: boolean
     type: object
+  utils.responseMessage:
+    properties:
+      data: {}
+      message:
+        example: Success
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -33,6 +75,291 @@ info:
   title: HuskyHoldem API documentation
   version: 1.0.0
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with email and password
+      parameters:
+      - description: User Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: User Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Auth token
+          schema:
+            $ref: '#/definitions/utils.AuthResponseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Authenticate user with email and password
+      tags:
+      - Auth
+  /bot/{botId}:
+    get:
+      consumes:
+      - application/json
+      description: Get bot by ID
+      parameters:
+      - description: Bot ID
+        in: path
+        name: botId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bot
+          schema:
+            $ref: '#/definitions/bot.Bot'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Get bot by ID
+      tags:
+      - Bot
+    put:
+      consumes:
+      - application/json
+      description: Update bot metadata with name and imgUrl
+      parameters:
+      - description: Bot ID
+        in: path
+        name: botId
+        required: true
+        type: string
+      - description: Bot Name
+        in: body
+        name: name
+        schema:
+          type: string
+      - description: Bot Image URL
+        in: body
+        name: imgUrl
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bot Metadata
+          schema:
+            $ref: '#/definitions/utils.responseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Update bot metadata
+      tags:
+      - Bot
+  /bot/{botId}/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generate bot auth token
+      parameters:
+      - description: Bot ID
+        in: path
+        name: botId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bot Auth Token
+          schema:
+            $ref: '#/definitions/utils.responseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Generate bot auth token
+      tags:
+      - Bot
+  /bot/new:
+    post:
+      consumes:
+      - application/json
+      description: Create a new bot with name, imgUrl, and email
+      parameters:
+      - description: Bot Name
+        in: body
+        name: name
+        schema:
+          type: string
+      - description: Bot Image URL
+        in: body
+        name: imgUrl
+        schema:
+          type: string
+      - description: Bot Email
+        in: body
+        name: email
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bot ID
+          schema:
+            $ref: '#/definitions/utils.responseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Create new bot
+      tags:
+      - Bot
+  /bot/token/key:
+    post:
+      consumes:
+      - application/json
+      description: Add key value to cache
+      parameters:
+      - description: Key
+        in: body
+        name: key
+        required: true
+        schema:
+          type: string
+      - description: Value
+        in: body
+        name: value
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Key Value
+          schema:
+            $ref: '#/definitions/utils.responseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Add key value to cache
+      tags:
+      - Bot
+  /bot/token/key/{key}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove bot key from cache
+      parameters:
+      - description: Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Key
+          schema:
+            $ref: '#/definitions/utils.responseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Remove bot key from cache
+      tags:
+      - Bot
+    get:
+      consumes:
+      - application/json
+      description: Get bot key from cache
+      parameters:
+      - description: Key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Key Value
+          schema:
+            $ref: '#/definitions/utils.responseMessage'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Get bot key from cache
+      tags:
+      - Bot
+  /bot/token/self:
+    get:
+      consumes:
+      - application/json
+      description: Get bot by token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bot
+          schema:
+            $ref: '#/definitions/bot.Bot'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Get bot by token
+      tags:
+      - Bot
+  /bot/token/update:
+    put:
+      consumes:
+      - application/json
+      description: Update bot metadata by token
+      parameters:
+      - description: Bot Name
+        in: body
+        name: name
+        schema:
+          type: string
+      - description: Bot Image URL
+        in: body
+        name: imgUrl
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Bot Metadata
+          schema:
+            $ref: '#/definitions/bot.BotMetaData'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.errorResponseMessage'
+      summary: Update bot metadata by token
+      tags:
+      - Bot
   /ping:
     get:
       consumes:

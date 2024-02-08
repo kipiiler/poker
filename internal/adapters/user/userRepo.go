@@ -95,7 +95,7 @@ func (repo *UserRepository) AddUserBotToken(email string, token string) error {
 func (repo *UserRepository) DeleteUserAuthToken(email string, token string) error {
 	sqlCode := `
 	UPDATE users
-	SET auth_tokens = ARRAY_REMOVE(auth_tokens, '{$1}}')
+	SET auth_tokens = ARRAY_REMOVE(auth_tokens, $1)
 	WHERE email = $2;`
 	_, err := repo.db.Exec(sqlCode, token, email)
 	return err
@@ -104,7 +104,7 @@ func (repo *UserRepository) DeleteUserAuthToken(email string, token string) erro
 func (repo *UserRepository) DeleteUserBotToken(email string, token string) error {
 	sqlCode := `
 	UPDATE users
-	SET bot_tokens = ARRAY_REMOVE(bot_tokens, '{$1}}')
+	SET bot_tokens = ARRAY_REMOVE(bot_tokens, $1)
 	WHERE email = $2;`
 	_, err := repo.db.Exec(sqlCode, token, email)
 	return err
