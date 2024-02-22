@@ -57,6 +57,7 @@ require (
 	huskyholdem/bot v1.0.0 // indirect
 	huskyholdem/card v1.0.0 // indirect
 	huskyholdem/game v1.0.0 // indirect
+	huskyholdem/gameState v1.0.0 //indirect
 	huskyholdem/port v1.0.0 // indirect
 	huskyholdem/user v1.0.0 // indirect
 	huskyholdem/utils v1.0.0 // indirect
@@ -65,6 +66,8 @@ require (
 replace huskyholdem/card => ./internal/core/domain/card
 
 replace huskyholdem/game => ./internal/core/domain/game
+
+replace huskyholdem/gameState => ./internal/core/domain/gameState
 
 replace huskyholdem/utils => ./internal/core/utils
 

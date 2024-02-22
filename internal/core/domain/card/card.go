@@ -48,6 +48,14 @@ func NewCard(v CardValue, s SuitValue) *Card {
 	return &Card{Value: v, Suit: s}
 }
 
+func NewCardFromString(card string) *Card {
+	if card[3] == 'c' {
+		return &Card{Value: card[3:], Suit: card[:3]}
+	} else {
+		return &Card{Value: card[4:], Suit: card[:4]}
+	}
+}
+
 // GetSuit returns the suit of a card
 func GetSuit(card Card) SuitValue {
 	return card.Suit
