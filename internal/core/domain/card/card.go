@@ -1,5 +1,7 @@
 package card
 
+import "encoding/json"
+
 type CardValue string
 
 const (
@@ -48,12 +50,14 @@ func NewCard(v CardValue, s SuitValue) *Card {
 	return &Card{Value: v, Suit: s}
 }
 
-func NewCardFromString(card string) *Card {
-	if card[3] == 'c' {
-		return &Card{Value: card[3:], Suit: card[:3]}
-	} else {
-		return &Card{Value: card[4:], Suit: card[:4]}
+// Deserialize deserializes a string representation of a card into a Card struct
+func DeserializeCard(s string) *Card {
+	var card Card
+	err := json.Unmarshal([]byte(s), &card)
+	if err != nil {
+		return &Card{}
 	}
+	return &card
 }
 
 // GetSuit returns the suit of a card

@@ -1,6 +1,9 @@
 package card
 
-import "math/rand"
+import (
+	"encoding/json"
+	"math/rand"
+)
 
 // Deck represents a deck of cards
 type Deck struct {
@@ -49,4 +52,25 @@ func (d *Deck) Reset() {
 			d.cards = append(d.cards, *c)
 		}
 	}
+}
+
+// Serialize serializes the Deck struct to a JSON string
+func (d *Deck) Serialize() (string, error) {
+	data, err := json.Marshal(d.cards)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+// Deserialize deserializes a JSON string to a Deck struct
+func DeserializeDeck(data string) (*Deck, error) {
+	var deck Deck
+	var cards []Card
+	err := json.Unmarshal([]byte(data), &cards)
+	if err != nil {
+		return nil, err
+	}
+	deck.cards = cards
+	return &deck, nil
 }
