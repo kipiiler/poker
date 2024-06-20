@@ -7,16 +7,18 @@ import "huskyholdem/game"
 type GameRepository interface {
 
 	// GetGameById returns a game by its id.
-	GetGameStateById()
-	GetGameById(id string) (*game.Game, error)
-	GetAllGame()
-	CreateNewGame(botIDs []string, g *game.Game) error
-	UpdateGameState(gameID string, gameState *game.GameState) error
-	UpdateGame(gameID string, game *game.Game) error
+	// GetGameStateById()
+	GetGameByID(id string) (*game.Game, error)
+	// GetAllGame()
+	CreateNewGame(g *game.Game) error
+	// UpdateGameState(gameID string, gameState *game.GameState) error
+	// UpdateGame(gameID string, game *game.Game) error
 }
 
 // GameService is the interface that wraps the basic game operations.
 type GameService interface {
-	NewGameService()
-	CreateNewGame()
+	NewGameService(repo GameRepository) *GameService
+	CreateNewGame(botIDs []string) (*game.Game, error)
+	CreateNewGameWithID(botIDs []string, gameID string) (*game.Game, error)
+	GetGameByID(id string) (*game.Game, error)
 }

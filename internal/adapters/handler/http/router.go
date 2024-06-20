@@ -1,7 +1,9 @@
 package adapters
 
 import (
+	"fmt"
 	_ "holdem/docs"
+	adapters "huskyholdem/adapters/handler/ws"
 	"os"
 	"strings"
 
@@ -19,6 +21,7 @@ func NewRouter(
 	pingHandler *PingHandler,
 	authHandler *AuthHandler,
 	botHandler *BotHandler,
+	gameHandler *adapters.GameHandler,
 ) (*Router, error) {
 
 	// Cors
@@ -26,6 +29,8 @@ func NewRouter(
 	allowedOrigins := os.Getenv("HTTP_ALLOWED_ORIGINS")
 	originsList := strings.Split(allowedOrigins, ",")
 	config.AllowOrigins = originsList
+	fmt.Println("Allowed origins: ", originsList)
+	fmt.Println("AAAAA")
 
 	router := gin.Default()
 	router.Use(cors.New(config))
@@ -56,6 +61,11 @@ func NewRouter(
 		botAuth.POST("/key", botHandler.AddKeyValueToCache)
 		botAuth.GET("/key/:key", botHandler.GetBotKeyFromCache)
 		botAuth.DELETE("/key/:key", botHandler.RemoveBotKeyFromCache)
+
+		game := v1.Group("/game")
+		game.POST("/new", gameHandler.CreateNewGame)
+		game.GET("/ws", gameHandler.BeNice)
+		game.GET("/room/:room", gameHandler.GameSocketByID)
 	}
 
 	return &Router{

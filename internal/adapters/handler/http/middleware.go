@@ -15,7 +15,7 @@ func AuthTokenMiddleware(us *service.UserService) gin.HandlerFunc {
 		}
 
 		header := c.Request.Header["Authorization"]
-		if len(header) == 0 {
+		if len(header) == 0 || header == nil {
 			utils.HandleError(c, utils.ErrUnauthorized)
 			return
 		}
@@ -44,7 +44,7 @@ func AuthTokenMiddleware(us *service.UserService) gin.HandlerFunc {
 func AuthBotTokenMiddleware(bs *service.BotService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.Request.Header["Authorization"]
-		if len(header) == 0 {
+		if len(header) == 0 || header == nil {
 			utils.HandleError(c, utils.ErrUnauthorized)
 			return
 		}

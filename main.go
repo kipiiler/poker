@@ -5,7 +5,9 @@ import (
 	"os"
 
 	botAdapter "huskyholdem/adapters/bot"
+	gameAdapter "huskyholdem/adapters/game"
 	handler "huskyholdem/adapters/handler/http"
+	gameHandler "huskyholdem/adapters/handler/ws"
 	userAdapter "huskyholdem/adapters/user"
 	autils "huskyholdem/adapters/utils"
 	service "huskyholdem/service"
@@ -27,6 +29,9 @@ import (
 // @host localhost:8080
 // @BasePath /v1
 func main() {
+
+	messageC := make(chan string)
+
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file")
@@ -58,6 +63,17 @@ func main() {
 	fmt.Println("Successfully connected to database")
 	defer postgresDbClient.Close(db)
 
+	// go routine whenever a new message is send to messageC, send back a message say AAA
+	go func() {
+		for {
+			select {
+			case msg := <-messageC:
+				fmt.Println("Message from channel: ", msg)
+				// conn.WriteMessage(websocket.TextMessage, []byte("AAA"))
+			}
+		}
+	}()
+
 	userRepo := userAdapter.NewUserRepository(db)
 	userCache := userAdapter.NewUserCache(redisCacheClient)
 
@@ -68,11 +84,16 @@ func main() {
 
 	botService := service.NewBotService(botRepository, botCache)
 
+	gameRepository := gameAdapter.NewGameRepository(db)
+	gameService := service.NewGameService(gameRepository)
+
 	pingHandler := handler.NewPingHandler()
 	authHandler := handler.NewAuthHandler(userService)
 	botHandler := handler.NewBotHandler(botService, userService)
 
-	router, err := handler.NewRouter(pingHandler, authHandler, botHandler)
+	gameHandler := gameHandler.NewGameHandler(gameService, messageC)
+
+	router, err := handler.NewRouter(pingHandler, authHandler, botHandler, gameHandler)
 	if err != nil {
 		fmt.Println("Unable to start application: " + err.Error())
 		os.Exit(1)

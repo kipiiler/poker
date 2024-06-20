@@ -1,12 +1,12 @@
 -- Create Table for games --
 CREATE TABLE games (
-    BotID   VARCHAR(225)[],
-    Started BOOLEAN,
-    Ended   BOOLEAN,
-    Winner  VARCHAR(225),
-    History VARCHAR(225)[],
-    Config  NULL,
-    GameID  VARCHAR(225)
+    game_id  VARCHAR(225) UNIQUE PRIMARY KEY,
+    bot_id VARCHAR(225)[],
+    started BOOLEAN,
+    ended   BOOLEAN,
+    winner  VARCHAR(225),
+    history VARCHAR(225)[],
+    config  TEXT
 );
 
 -- Create Table for game state --

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let socket = new WebSocket("ws://localhost:8080/v1/game/ws");
+
+        socket.onopen = function(e) {
+            console.log("[open] Connection established");
+            console.log("Sending to server");
+            const data = {
+                "type": "join",
+                "data": {
+                    "name": "John"
+                }
+            };
+            socket.send(JSON.stringify(data));
+        };
+
+        socket.onmessage = function(event) {
+            console.log(`[message] Data received from server: ${event.data}`);
+        };
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
